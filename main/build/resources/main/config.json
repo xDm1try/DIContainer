@@ -1,0 +1,20 @@
+{
+  "beans": [
+    {
+      "name": "myService",
+      "className": "org.example",
+      "scope": "singleton",
+      "properties": [
+        {
+          "name": "anotherService",
+          "ref": "anotherService"
+        }
+      ]
+    },
+    {
+      "name": "anotherService",
+      "className": "org.example",
+      "scope": "prototype"
+    }
+  ]
+}
