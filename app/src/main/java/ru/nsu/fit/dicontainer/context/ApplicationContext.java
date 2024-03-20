@@ -1,7 +1,7 @@
 package ru.nsu.fit.dicontainer.context;
 
 import lombok.Setter;
-import ru.nsu.fit.dicontainer.configurator.BeanConfigurator;
+import ru.nsu.fit.dicontainer.annotation.Prototype;
 import ru.nsu.fit.dicontainer.factory.BeanFactory;
 import ru.nsu.fit.dicontainer.postprocessor.BeanPostProcessor;
 
@@ -19,19 +19,16 @@ public class ApplicationContext {
   }
 
   public <T> T getBean(Class<T> clazz) {
-    if (beanMap.containsKey(clazz)) {
-      return (T) beanMap.get(clazz);
-    }
-
     T bean = beanFactory.getBean(clazz);
+
     callPostProcessors(bean);
 
-    beanMap.put(clazz, bean);
+//    beanMap.put(clazz, bean);
     return bean;
   }
 
   private void callPostProcessors(Object bean) {
-    for(Class processor : beanFactory.getBeanConfigurator().getScanner().getSubTypesOf(BeanPostProcessor.class)){
+    for (Class processor : beanFactory.getBeanConfigurator().getScanner().getSubTypesOf(BeanPostProcessor.class)) {
       BeanPostProcessor postProcessor = null;
       try {
         postProcessor = (BeanPostProcessor) processor.getDeclaredConstructor().newInstance();

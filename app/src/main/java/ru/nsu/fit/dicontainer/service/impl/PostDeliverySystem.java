@@ -4,6 +4,9 @@ import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 import ru.nsu.fit.dicontainer.service.DeliverySystem;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class PostDeliverySystem implements DeliverySystem {
   public PostDeliverySystem() {
   }

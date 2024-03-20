@@ -1,7 +1,5 @@
 package ru.nsu.fit.dicontainer.configurator;
 
-import com.google.common.reflect.Reflection;
-import lombok.Getter;
 import org.reflections.Reflections;
 
 import java.util.Map;

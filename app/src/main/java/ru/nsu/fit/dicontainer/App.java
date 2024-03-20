@@ -6,6 +6,9 @@ package ru.nsu.fit.dicontainer;
 import ru.nsu.fit.dicontainer.client.PartyOrganizer;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
 import ru.nsu.fit.dicontainer.factory.BeanFactory;
+import ru.nsu.fit.dicontainer.model.Person;
+import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
+import ru.nsu.fit.dicontainer.service.GiftPresenter;
 
 public class App {
   public ApplicationContext run(){
@@ -19,8 +22,14 @@ public class App {
   public static void main(String[] args) {
     App app = new App();
     ApplicationContext context = app.run();
-
-    PartyOrganizer partyOrganizer = context.getBean(PartyOrganizer.class);
-    partyOrganizer.prepareToCelebration();
+    Thread th2 = new Thread(() -> {
+      GiftChooseHelper obj1 = context.getBean(GiftChooseHelper.class);
+      System.out.println("1" + obj1);
+      obj1.choose(new Person("NAME1"));
+    });
+    GiftChooseHelper obj2 = context.getBean(GiftChooseHelper.class);
+    System.out.println("1" + obj2);
+    obj2.choose(new Person("NAME2"));
+    th2.start();
   }
 }

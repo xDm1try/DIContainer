@@ -1,11 +1,16 @@
 package ru.nsu.fit.dicontainer.service;
 
-import ru.nsu.fit.dicontainer.annotation.Inject;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import ru.nsu.fit.dicontainer.annotation.PostConstruct;
+import ru.nsu.fit.dicontainer.annotation.Prototype;
+import ru.nsu.fit.dicontainer.annotation.ThreadScope;
 import ru.nsu.fit.dicontainer.factory.BeanFactory;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 
+@Prototype
 public class GiftPresenter {
   @Inject
   private GiftChooseHelper giftChooseHelper;
