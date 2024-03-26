@@ -1,6 +1,7 @@
 package ru.nsu.fit.dicontainer.service;
 
 import javax.inject.Inject;
+import javax.inject.Scope;
 import javax.inject.Singleton;
 
 import ru.nsu.fit.dicontainer.annotation.PostConstruct;

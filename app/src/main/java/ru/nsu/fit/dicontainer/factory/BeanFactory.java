@@ -14,6 +14,7 @@ import ru.nsu.fit.dicontainer.configurator.BeanConfigurator;
 import ru.nsu.fit.dicontainer.configurator.JavaBeanConfigurator;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,9 @@ public class BeanFactory {
     }
 
     try {
+      Constructor<? extends T> constructor = implementationClass.getDeclaredConstructor();
+      Class[] parameters = constructor.getParameterTypes();
+
       T bean = implementationClass.getDeclaredConstructor().newInstance();
       if (implementationClass.isAnnotationPresent(ThreadScope.class)){
         if (threadBeanMap.containsKey(Thread.currentThread())){
@@ -74,7 +78,6 @@ public class BeanFactory {
       for (Field field : fieldList) {
         field.setAccessible(true);
         field.set(bean, applicationContext.getBean(field.getType()));
-//        sinletonBeanMap.put(clazz, bean);
       }
       return bean;
     } catch (Exception ex) {

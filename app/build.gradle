@@ -6,15 +6,23 @@
  * User Manual available at https://docs.gradle.org/8.0.2/userguide/building_java_projects.html
  */
 
+
+
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.22'
+    id 'groovy'
 }
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
 
 dependencies {
     implementation 'org.projectlombok:lombok:1.18.28'
@@ -26,6 +34,10 @@ dependencies {
     implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.reflections:reflections:0.9.12'
     implementation 'javax.inject:javax.inject:1'
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.9'
 }
 
 application {
@@ -36,4 +48,8 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(17)
 }

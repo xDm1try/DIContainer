@@ -1,6 +1,7 @@
 package ru.nsu.fit.dicontainer.service.impl;
 
 import javax.inject.Inject;
+import javax.inject.Scope;
 import javax.inject.Singleton;
 
 import ru.nsu.fit.dicontainer.annotation.Prototype;
@@ -13,7 +14,7 @@ import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
 @ThreadScope
 public class SmartGiftChooseHelper implements GiftChooseHelper {
 
-  @Inject
+  @Inject()
   private Recommender recommender;
 
   @Override
