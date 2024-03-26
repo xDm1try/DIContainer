@@ -1,4 +1,4 @@
-package org.example.config
+package org.example.parsing
 
 import org.example.beans.BeanDefinition
 import java.util.Objects

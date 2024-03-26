@@ -1,5 +1,6 @@
 package org.example.beans
 
+import groovy.transform.ToString
 import org.example.model.ConstructorArg
 import org.example.model.Property
 
