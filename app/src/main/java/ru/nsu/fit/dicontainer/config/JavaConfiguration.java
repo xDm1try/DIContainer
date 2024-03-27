@@ -11,8 +11,4 @@ public class JavaConfiguration implements Configuration{
     return "ru.nsu.fit.dicontainer";
   }
 
-  @Override
-  public Map<Class, Class> getInterfaceToImplementation() {
-    return Map.of(PaymentSystem.class, CashPaymentSystem.class);
-  }
 }

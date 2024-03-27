@@ -23,5 +23,7 @@ public class SmartGiftChooseHelper implements GiftChooseHelper {
     System.out.println("Recommended by " + recommender);
     return new Gift("iPhone", 120000);
   }
-
+  public void setRecommender(Recommender recommender) {
+    this.recommender = recommender;
+  }
 }

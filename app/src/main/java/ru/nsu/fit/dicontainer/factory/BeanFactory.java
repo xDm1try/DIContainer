@@ -37,7 +37,7 @@ public class BeanFactory {
 
   public BeanFactory(ApplicationContext applicationContext) {
     this.configuration = new JavaConfiguration();
-    this.beanConfigurator = new JavaBeanConfigurator(configuration.getPackageToScan(), configuration.getInterfaceToImplementation());
+    this.beanConfigurator = new JavaBeanConfigurator(configuration.getPackageToScan());
     this.applicationContext = applicationContext;
   }
 
@@ -83,6 +83,11 @@ public class BeanFactory {
     } catch (Exception ex) {
       System.out.println("Exception in BeanFactory.getBean" + ex.getMessage());
     }
+    return null;
+  }
+
+  private <T> T getPrototype(Class<T> clazz){
+    //TODO method for Provider<T>
     return null;
   }
 }
