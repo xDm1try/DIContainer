@@ -15,6 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class JavaBeanConfigurator implements BeanConfigurator{
   @Override
+  public <T> List<Class<? extends T>> getBeanDefinitions(Class<T> interfaceClass) {
+    return null;
+  }
+
+  @Override
   public Reflections getScanner() {
     return scanner;
   }

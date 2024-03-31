@@ -18,7 +18,6 @@ public class Config {
     bean.setRecommender(recommender());
     return bean;
   }
-
   @Bean
   public Recommender recommender() {
     return new SmartRecommender();
