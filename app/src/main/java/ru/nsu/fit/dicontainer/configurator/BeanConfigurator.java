@@ -1,9 +1,11 @@
 package ru.nsu.fit.dicontainer.configurator;
 
 import com.google.common.reflect.Reflection;
+import org.example.beans.BeanDefinition;
 import org.reflections.Reflections;
 
+import java.util.List;
+
 public interface BeanConfigurator {
-  <T> Class<? extends T> getImplementationClass(Class<T> interfaceClass);
-  Reflections getScanner();
+  List<BeanDefinition> getBeanDefinitions();
 }

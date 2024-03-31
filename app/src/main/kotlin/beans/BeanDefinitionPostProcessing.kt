@@ -4,9 +4,5 @@ import org.example.model.ConstructorArg
 import org.example.model.Property
 
 class BeanDefinitionPostProcessing(
-    val clazz: Class<*>,
-    val name: String,
-    val scope: String?,
-    val constructorArgs: List<ConstructorArg>?,
-    val properties: List<Property>?
-) : BeanDefinition
+    clazz: Class<*>, name: String, scope: String?, constructorArgs: List<ConstructorArg>?, properties: List<Property>?
+) : BeanDefinition(clazz, name, scope, constructorArgs, properties)
