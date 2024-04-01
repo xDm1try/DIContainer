@@ -40,9 +40,12 @@ public class ApplicationContext {
 
   public <T> T getBean(Class<T> clazz) {
     T bean = beanFactory.getBean(clazz);
-
     callPostProcessors(bean);
-
+    return bean;
+  }
+  public <T> T getBean(String name){
+    T bean = beanFactory.getBean(name);
+    callPostProcessors(bean);
     return bean;
   }
 
