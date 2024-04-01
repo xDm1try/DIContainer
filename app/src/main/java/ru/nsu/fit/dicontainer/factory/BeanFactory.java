@@ -7,7 +7,9 @@ import ru.nsu.fit.dicontainer.annotation.ThreadScope;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -66,108 +68,90 @@ public class BeanFactory {
 //    }
 
     Optional<Object> foundBean = findBeanInMaps(currentBeanDefinition);
-    if (findBeanInMaps(currentBeanDefinition).isPresent()){
+    if (findBeanInMaps(currentBeanDefinition).isPresent()) {
       return (T) foundBean.get();
-    }else{
-      throw new RuntimeException("foundBean is empty" + currentBeanDefinition);
     }
 
     try {
-      T bean;
-      try{
-        bean = (T) createBean(currentBeanDefinition);
-      }catch (ClassCastException ex){
-        throw new RuntimeException(ex.getMessage() + "in (T) createBean(currentBeanDefinition)");
-      }
-
-      if (currentBeanDefinition.getClazz().isAnnotationPresent(ThreadScope.class)) {
-        if (threadBeanMap.containsKey(Thread.currentThread())) {
-          threadBeanMap.get(Thread.currentThread()).put(currentBeanDefinition, bean);
-        } else {
-          Map<BeanDefinition, Object> threadMap = new ConcurrentHashMap<>();
-          threadMap.put(currentBeanDefinition, bean);
-          threadBeanMap.put(Thread.currentThread(), threadMap);
-        }
-      }
-      if (currentBeanDefinition.getClazz().isAnnotationPresent(Singleton.class)) {
-        sinletonBeanMap.put(currentBeanDefinition, bean);
-      }
-
-      List<Field> fieldList = stream(currentBeanDefinition.getClazz().getDeclaredFields())
-          .filter(field -> field.isAnnotationPresent(Inject.class))
-          .map(field -> {
-            field.setAccessible(true);
-            try {
-              field.set(bean, applicationContext.getBean(field.getType()));
-            } catch (IllegalAccessException e) {
-              throw new RuntimeException(e.getMessage() + "in field.set");
-            }
-            return field;
-          }).toList();
+      T bean = (T) createBean(currentBeanDefinition);
       return bean;
     } catch (ClassCastException ex) {
-      throw new RuntimeException(ex.getMessage() + currentBeanDefinition + ".getConstructor()");
-    } catch (Exception ex) {
-      System.out.println("Exception in BeanFactory.getBean" + ex.getMessage());
+      throw new RuntimeException("Cast after createBean(" + currentBeanDefinition + ")");
     }
-    return null;
+
   }
 
-  public <T> T getBean(String name){
+  public <T> T getBean(String name) {
     BeanDefinition currentBeanDefinition = null;
     List<BeanDefinition> beanDefinitionList = this.applicationContext.getAllBeanDefinitions().stream()
         .filter(beanDefinition -> beanDefinition.getName().equals(name))
         .toList();
-    if (beanDefinitionList.size() != 1){
+    if (beanDefinitionList.size() != 1) {
       throw new RuntimeException("Not 1 beanDefinition with name=" + name);
-    }else{
+    } else {
       currentBeanDefinition = beanDefinitionList.get(0);
     }
     Optional<Object> foundBean = findBeanInMaps(currentBeanDefinition);
-    if (findBeanInMaps(currentBeanDefinition).isPresent()){
+    if (findBeanInMaps(currentBeanDefinition).isPresent()) {
       return (T) foundBean.get();
-    }else{
-      throw new RuntimeException("foundBean is empty" + currentBeanDefinition);
     }
-
+    try {
+      T bean = (T) createBean(currentBeanDefinition);
+      return bean;
+    } catch (ClassCastException ex) {
+      throw new RuntimeException("Cast after createBean(" + currentBeanDefinition + ")");
+    }
   }
 
-  private Optional<Object> findBeanInMaps(BeanDefinition beanDefinition){
-    if (beanDefinition.getScope().equals("singleton")){
-      List<Object> beansObj = this.sinletonBeanMap.entrySet().stream().filter(entry ->
-       entry.getKey().equals(beanDefinition)
-      ).map(entry -> entry.getValue()).toList();
-      if (beansObj.size() != 1){
-        throw new RuntimeException("Not 1 beanObj");
-      }
-      return beansObj.stream().findFirst();
-    }
-    if (beanDefinition.getScope().equals("thread")){
-      List<Object> beansObj = this.threadBeanMap.entrySet().stream()
-          .filter(threadMapEntry -> threadMapEntry.getKey() == Thread.currentThread())
-          .map(Map.Entry::getValue)
-          .flatMap(map -> map.entrySet().stream())
-          .filter(entry -> entry.getKey() == beanDefinition)
-          .map(entry -> entry.getValue())
-          .toList();
-      if (beansObj.size() != 1){
-        throw new RuntimeException("Not 1 beanObj");
-      }
-      return beansObj.stream().findFirst();
-    }
-    return Optional.empty();
-  }
   private Object createBean(BeanDefinition beanDefinition) {
     Class<?> implementationClass = beanDefinition.getClazz();
     List<Property> properties = beanDefinition.getProperties();
     List<ConstructorArg> parameters = beanDefinition.getConstructorArgs();
+    Object bean;
 
     try {
-      List<?> constructorBeans = new ArrayList<>();
+      List<Object> constructorBeans = new ArrayList<>();
       Constructor<?> constructor = implementationClass.getDeclaredConstructor();
-      parameters.stream().map(constructorArg -> {
-        constructorBeans.add(this.applicationContext.getBean(constructorArg.getName()));
-      }).toList();
+      if (parameters.isEmpty()) {
+        bean = constructor.newInstance();
+      } else {
+        parameters.stream()
+            .forEach(parameter -> {
+              if (parameter.getValue() == parameter.getRef()) {
+                throw new RuntimeException("Need value != ref in constructor params");
+              }
+              if (parameter.getValue() != null) {
+                constructorBeans.add(parameter.getValue());
+              }
+              if (parameter.getRef() != null) {
+                constructorBeans.add(this.applicationContext.getBean(parameter.getRef()));
+              }
+            });
+        Object[] paramArgs = constructorBeans.toArray();
+        bean = constructor.newInstance(paramArgs);
+      }
+      stream(beanDefinition.getClazz().getDeclaredFields())
+          .forEach(field -> {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Inject.class)) {
+              try {
+                field.set(bean, applicationContext.getBean(field.getType()));
+              } catch (IllegalAccessException e) {
+                throw new RuntimeException(e.getMessage() + "in @Inject field.set");
+              }
+            }
+            if (field.isAnnotationPresent(Named.class)) {
+              Named value = field.getAnnotation(Named.class);
+              String beanName = value.value();
+              try {
+                field.set(bean, applicationContext.getBean(beanName));
+              } catch (IllegalAccessException e) {
+                throw new RuntimeException(e.getMessage() + "in @Named field.set");
+              }
+            }
+          });
+
+      putBeanInMaps(beanDefinition, bean);
 
     } catch (InstantiationException e) {
       throw new RuntimeException(e);
@@ -178,6 +162,50 @@ public class BeanFactory {
     } catch (NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
+    return bean;
+  }
+
+
+  private Optional<Object> findBeanInMaps(BeanDefinition beanDefinition) {
+    if (beanDefinition.getScope().equals("singleton")) {
+      List<Object> beansObj = this.sinletonBeanMap.entrySet().stream().filter(entry ->
+          entry.getKey().equals(beanDefinition)
+      ).map(entry -> entry.getValue()).toList();
+      if (beansObj.size() != 1) {
+        throw new RuntimeException("Not 1 beanObj");
+      }
+      return beansObj.stream().findFirst();
+    }
+    if (beanDefinition.getScope().equals("thread")) {
+      List<Object> beansObj = this.threadBeanMap.entrySet().stream()
+          .filter(threadMapEntry -> threadMapEntry.getKey() == Thread.currentThread())
+          .map(Map.Entry::getValue)
+          .flatMap(map -> map.entrySet().stream())
+          .filter(entry -> entry.getKey() == beanDefinition)
+          .map(entry -> entry.getValue())
+          .toList();
+      if (beansObj.size() != 1) {
+        throw new RuntimeException("Not 1 beanObj");
+      }
+      return beansObj.stream().findFirst();
+    }
+    return Optional.empty();
+  }
+
+  private void putBeanInMaps(BeanDefinition beanDefinition, Object bean) {
+    if (beanDefinition.getClazz().isAnnotationPresent(ThreadScope.class)) {
+      if (threadBeanMap.containsKey(Thread.currentThread())) {
+        threadBeanMap.get(Thread.currentThread()).put(beanDefinition, bean);
+      } else {
+        Map<BeanDefinition, Object> threadMap = new ConcurrentHashMap<>();
+        threadMap.put(beanDefinition, bean);
+        threadBeanMap.put(Thread.currentThread(), threadMap);
+      }
+    }
+    if (beanDefinition.getClazz().isAnnotationPresent(Singleton.class)) {
+      sinletonBeanMap.put(beanDefinition, bean);
+    }
+
   }
 
   private <T> T getPrototype(Class<T> clazz) {
