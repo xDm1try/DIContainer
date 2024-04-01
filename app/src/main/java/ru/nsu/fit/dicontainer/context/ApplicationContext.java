@@ -43,7 +43,8 @@ public class ApplicationContext {
     callPostProcessors(bean);
     return bean;
   }
-  public <T> T getBean(String name){
+
+  public <T> T getBean(String name) {
     T bean = beanFactory.getBean(name);
     callPostProcessors(bean);
     return bean;
@@ -61,6 +62,7 @@ public class ApplicationContext {
       BeanPostProcessor postProcessor = null;
       try {
         postProcessor = (BeanPostProcessor) processor.getDeclaredConstructor().newInstance();
+        postProcessor.process(bean);
       } catch (InstantiationException e) {
         throw new RuntimeException(e);
       } catch (IllegalAccessException e) {
@@ -70,7 +72,7 @@ public class ApplicationContext {
       } catch (NoSuchMethodException e) {
         throw new RuntimeException(e);
       }
-      postProcessor.process(bean);
+
     }
   }
 
