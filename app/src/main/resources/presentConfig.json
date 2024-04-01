@@ -22,7 +22,7 @@
     {
       "name": "SmartGiftChooseHelperName",
       "classPath": "ru.nsu.fit.dicontainer.service.impl.SmartGiftChooseHelper",
-      "scope": "singleton",
+      "scope": "thread",
       "properties": [
         {
           "name": "SmartRecommenderName",

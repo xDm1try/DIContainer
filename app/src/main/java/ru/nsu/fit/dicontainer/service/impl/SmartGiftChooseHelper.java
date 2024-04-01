@@ -15,7 +15,7 @@ import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
 @ThreadScope
 public class SmartGiftChooseHelper implements GiftChooseHelper {
 
-  @Inject()
+  @Inject
   private Recommender recommender;
 
   @Override
@@ -28,6 +28,7 @@ public class SmartGiftChooseHelper implements GiftChooseHelper {
   public void postConstruct(){
     System.out.println("SmartGiftChooseHelper has been initialized " + this.hashCode());
   }
+
 
   public void setRecommender(Recommender recommender) {
     this.recommender = recommender;

@@ -5,6 +5,9 @@ import org.example.model.ConstructorArg;
 import org.example.model.Property;
 import ru.nsu.fit.dicontainer.annotation.ThreadScope;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
+import ru.nsu.fit.dicontainer.service.Courier;
+import ru.nsu.fit.dicontainer.service.Device;
+import ru.nsu.fit.dicontainer.service.Vehicle;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -31,7 +35,6 @@ public class BeanFactory {
 
   public <T> T getBean(Class<T> clazz) {
     BeanDefinition currentBeanDefinition = null;
-
     List<BeanDefinition> beanDefinitionList = this.applicationContext.getAllBeanDefinitions()
         .stream()
         .filter(beanDefinition -> clazz.isAssignableFrom(beanDefinition.getClazz()))
@@ -93,10 +96,22 @@ public class BeanFactory {
     List<Property> properties = beanDefinition.getProperties();
     List<ConstructorArg> parameters = beanDefinition.getConstructorArgs();
     Object bean;
-
+    Class<?>[] parametersArray = new Class[parameters.size()];
+    for(int i = 0; i < parameters.size(); i++){
+      ConstructorArg arg = parameters.get(i);
+      if(arg.getRef() != null){
+        try {
+          parametersArray[i] = Class.forName(arg.getRef());
+        } catch (ClassNotFoundException e) {
+          throw new RuntimeException(e);
+        }
+      }else{
+        parametersArray[i] = "".getClass();
+      }
+    }
     try {
       List<Object> constructorBeans = new ArrayList<>();
-      Constructor<?> constructor = implementationClass.getDeclaredConstructor();
+      Constructor<?> constructor = implementationClass.getDeclaredConstructors()[0];
       if (parameters == null || parameters.isEmpty()) {
         bean = constructor.newInstance();
       } else {
@@ -109,7 +124,12 @@ public class BeanFactory {
                 constructorBeans.add(parameter.getValue());
               }
               if (parameter.getRef() != null) {
-                constructorBeans.add(this.applicationContext.getBean(parameter.getRef()));
+                try {
+                  Class<?> clazz = Class.forName(parameter.getRef());
+                  constructorBeans.add(this.applicationContext.getBean(clazz));
+                } catch (ClassNotFoundException e) {
+                  throw new RuntimeException(e);
+                }
               }
             });
         Object[] paramArgs = constructorBeans.toArray();
@@ -171,8 +191,6 @@ public class BeanFactory {
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     } catch (InvocationTargetException e) {
-      throw new RuntimeException(e);
-    } catch (NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
     return bean;

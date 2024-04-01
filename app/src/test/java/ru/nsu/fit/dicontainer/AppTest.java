@@ -3,29 +3,61 @@
  */
 package ru.nsu.fit.dicontainer;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.nsu.fit.dicontainer.configurator.BeanConfigurator;
+import ru.nsu.fit.dicontainer.configurator.JsonConfigurator;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
+import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
+import ru.nsu.fit.dicontainer.service.DeliverySystem;
 import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
+import ru.nsu.fit.dicontainer.service.GiftPresenter;
+import ru.nsu.fit.dicontainer.service.impl.PostDeliverySystem;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
 
-
-
+  @Test
+  public void testConstructorParameters(){
+    App app = new App();
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    DeliverySystem deliverySystem = context.getBean(DeliverySystem.class);
+    deliverySystem.deliver(new Gift("GiftName", 1256), new Person("Solaris"));
+  }
+  @Test
+  public void annotationNamed(){
+    App app = new App();
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+    giftPresenter.present(new Person("Nikita"));
+  }
+  @Test
+  public void allSingletonsInJson(){
+    App app = new App();
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+    giftPresenter.present(new Person("Volodya"));
+  }
   @Test
   public void ThreadScope() {
     App app = new App();
-    ApplicationContext context = app.run();
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig.json");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    final DeliverySystem[] beans = new DeliverySystem[2];
     Thread th2 = new Thread(() -> {
-      GiftChooseHelper obj1 = context.getBean(GiftChooseHelper.class);
-      System.out.println("1" + obj1);
-      obj1.choose(new Person("NAME1"));
+      beans[0] = context.getBean(DeliverySystem.class);
+      beans[0].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
     });
-    GiftChooseHelper obj2 = context.getBean(GiftChooseHelper.class);
-    System.out.println("1" + obj2);
-    obj2.choose(new Person("NAME2"));
     th2.start();
+    beans[1] = context.getBean(DeliverySystem.class);
+    beans[1].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
+    System.out.println("First thread got obj1 " + beans[0].hashCode());
+    System.out.println("First thread got obj2 " + beans[1].hashCode());
+    Assertions.assertTrue(beans[0].hashCode() != beans[1].hashCode());
   }
 }

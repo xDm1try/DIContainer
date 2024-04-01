@@ -1,0 +1,110 @@
+{
+  "beans": [
+    {
+      "name": "GiftPresenterName",
+      "classPath": "ru.nsu.fit.dicontainer.service.GiftPresenter",
+      "scope": "singleton",
+      "constructorArgs": [],
+      "properties": [
+        {
+          "name": "SmartGiftChooseHelperName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.SmartGiftChooseHelper"
+        },
+        {
+          "name": "CashPaymentSystemName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.CashPaymentSystem"
+        },
+        {
+          "name": "PostDeliverySystemName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.PostDeliverySystem"
+        }
+      ]
+    },
+    {
+      "name": "SmartGiftChooseHelperName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.SmartGiftChooseHelper",
+      "scope": "singleton",
+      "properties": [
+        {
+          "name": "SmartRecommenderName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.SmartRecommender"
+        }
+      ],
+      "constructorArgs": []
+    },
+    {
+      "name": "SmartRecommenderName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.SmartRecommender",
+      "scope": "singleton",
+      "constructorArgs": [],
+      "properties": []
+    },
+    {
+      "name": "CashPaymentSystemName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.CashPaymentSystem",
+      "scope": "singleton",
+      "constructorArgs": [],
+      "properties": []
+    },
+    {
+      "name": "CardPaymentSystemName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.CardPaymentSystem",
+      "scope": "singleton",
+      "constructorArgs": [],
+      "properties": []
+    },
+    {
+      "name": "PostDeliverySystemName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.PostDeliverySystem",
+      "scope": "thread",
+      "constructorArgs": [
+        {
+          "name": "CarName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.Car"
+        },
+        {
+          "name": "YandexCourierName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.CourierYandex"
+        },
+        {
+          "name": "DeviceName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.PhoneTracker"
+        }
+      ],
+      "properties": []
+    },
+    {
+      "name": "YandexCourierName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.CourierYandex",
+      "scope": "thread",
+      "constructorArgs": [
+        {
+          "name": "PhraseCourier",
+          "value": "\"Yandex > Google\" сказал курьер Штирлиц"
+        }
+      ],
+      "properties": []
+    },
+    {
+      "name": "CarName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.Car",
+      "scope": "thread",
+      "constructorArgs": [],
+      "properties": []
+    },
+    {
+      "name": "BikeName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.Bike",
+      "scope": "thread",
+      "constructorArgs": [],
+      "properties": []
+    },
+    {
+      "name": "DeviceName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.PhoneTracker",
+      "scope": "thread",
+      "constructorArgs": [],
+      "properties": []
+    }
+  ]
+}
