@@ -11,7 +11,7 @@ import ru.nsu.fit.dicontainer.service.GiftPresenter;
 
 public class App {
   public ApplicationContext run(){
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/config.json");
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig.json");
     ApplicationContext applicationContext = new ApplicationContext("ru.nsu.fit.dicontainer" ,jsonBeanConfigurator);
     BeanFactory beanFactory = new BeanFactory(applicationContext);
     applicationContext.setBeanFactory(beanFactory);
@@ -22,14 +22,7 @@ public class App {
   public static void main(String[] args) {
     App app = new App();
     ApplicationContext context = app.run();
-    Thread th2 = new Thread(() -> {
-      GiftChooseHelper obj1 = context.getBean(GiftChooseHelper.class);
-      System.out.println("1" + obj1);
-      obj1.choose(new Person("NAME1"));
-    });
-    GiftChooseHelper obj2 = context.getBean(GiftChooseHelper.class);
-    System.out.println("1" + obj2);
-    obj2.choose(new Person("NAME2"));
-    th2.start();
+    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+    giftPresenter.present(new Person("Volodya"));
   }
 }

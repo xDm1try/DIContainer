@@ -13,10 +13,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Arrays.stream;
@@ -33,39 +31,26 @@ public class BeanFactory {
 
   public <T> T getBean(Class<T> clazz) {
     BeanDefinition currentBeanDefinition = null;
-    if (clazz.isInterface()) {
-      List<BeanDefinition> beanDefinitionList = this.applicationContext.getAllBeanDefinitions()
-          .parallelStream()
-          .filter(beanDefinition -> clazz.isAssignableFrom(beanDefinition.getClazz()))
-          .toList();
-      if (beanDefinitionList.size() != 1) {
-        throw new RuntimeException("Not 1 beans implements interface");
-      } else {
-        try {
-          currentBeanDefinition = beanDefinitionList.get(0);
-        } catch (ClassCastException ex) {
-          System.err.println(ex.getMessage());
-          throw new RuntimeException(ex.getMessage());
-        } finally {
-          if (currentBeanDefinition == null) {
-            throw new RuntimeException("currentBeanDefinition in BeanFactory.getBean(" + clazz + ") is null");
-          }
+
+    List<BeanDefinition> beanDefinitionList = this.applicationContext.getAllBeanDefinitions()
+        .stream()
+        .filter(beanDefinition -> clazz.isAssignableFrom(beanDefinition.getClazz()))
+        .toList();
+    if (beanDefinitionList.size() != 1) {
+      throw new RuntimeException("Not 1 beans implements interface");
+    } else {
+      try {
+        currentBeanDefinition = beanDefinitionList.get(0);
+      } catch (ClassCastException ex) {
+        System.err.println(ex.getMessage());
+        throw new RuntimeException(ex.getMessage());
+      } finally {
+        if (currentBeanDefinition == null) {
+          throw new RuntimeException("currentBeanDefinition in BeanFactory.getBean(" + clazz + ") is null");
         }
       }
     }
 
-//    if (currentBeanDefinition.getScope().equals("singleton") &&
-//        sinletonBeanMap.containsKey(currentBeanDefinition)) {
-//      return (T) sinletonBeanMap.get(currentBeanDefinition);
-//    }
-//    if (currentBeanDefinition.getScope().equals("thread") &&
-//        threadBeanMap.containsKey(Thread.currentThread())) {
-//      threadBeanMap.entrySet().removeIf(entry -> !entry.getKey().isAlive());
-//      Map<BeanDefinition, Object> threadMap = threadBeanMap.get(Thread.currentThread());
-//      if (threadMap.containsKey(currentBeanDefinition)) {
-//        return (T) threadBeanMap.get(currentBeanDefinition);
-//      }
-//    }
 
     Optional<Object> foundBean = findBeanInMaps(currentBeanDefinition);
     if (findBeanInMaps(currentBeanDefinition).isPresent()) {
@@ -112,7 +97,7 @@ public class BeanFactory {
     try {
       List<Object> constructorBeans = new ArrayList<>();
       Constructor<?> constructor = implementationClass.getDeclaredConstructor();
-      if (parameters.isEmpty()) {
+      if (parameters == null || parameters.isEmpty()) {
         bean = constructor.newInstance();
       } else {
         parameters.stream()
@@ -134,13 +119,41 @@ public class BeanFactory {
           .forEach(field -> {
             field.setAccessible(true);
             if (field.isAnnotationPresent(Inject.class)) {
-              try {
-                field.set(bean, applicationContext.getBean(field.getType()));
-              } catch (IllegalAccessException e) {
-                throw new RuntimeException(e.getMessage() + "in @Inject field.set");
+              Class<?> type = field.getType();
+              if (type.getTypeName().equals("".getClass().getTypeName())) {
+                List<Property> valueProperties = properties.stream()
+                    .filter(property -> property.getValue() != null)
+                    .toList();
+                if (valueProperties.size() != 1) {
+                  throw new RuntimeException("Not single value \"value\" in setting properties");
+                } else {
+                  String value = valueProperties.get(0).getValue();
+                  try {
+                    field.set(bean, value);
+                  } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e.getMessage() + "in @Inject field.set value=" + value);
+                  }
+                }
+              } else {
+                List<BeanDefinition> refBeans = this.applicationContext.getAllBeanDefinitions().stream()
+                    .filter(beanDefinition1 -> {
+                      Class<?> beanImpl = beanDefinition1.getClazz();
+                      boolean result = type.isAssignableFrom(beanImpl);
+                      return result;
+                    })
+                    .toList();
+                if (refBeans.size() > 1) {
+                  throw new RuntimeException("More 1 value \"ref\" in setting properties");
+                } else {
+                  BeanDefinition injectingBean = refBeans.get(0);
+                  try {
+                    field.set(bean, applicationContext.getBean(injectingBean.getName()));
+                  } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e.getMessage() + "in @Inject field.set ref=" + injectingBean);
+                  }
+                }
               }
-            }
-            if (field.isAnnotationPresent(Named.class)) {
+            } else if (field.isAnnotationPresent(Named.class)) {
               Named value = field.getAnnotation(Named.class);
               String beanName = value.value();
               try {
@@ -171,8 +184,8 @@ public class BeanFactory {
       List<Object> beansObj = this.sinletonBeanMap.entrySet().stream().filter(entry ->
           entry.getKey().equals(beanDefinition)
       ).map(entry -> entry.getValue()).toList();
-      if (beansObj.size() != 1) {
-        throw new RuntimeException("Not 1 beanObj");
+      if (beansObj.size() > 1) {
+        throw new RuntimeException("More 1 beanObj in singleton map");
       }
       return beansObj.stream().findFirst();
     }
@@ -184,8 +197,8 @@ public class BeanFactory {
           .filter(entry -> entry.getKey() == beanDefinition)
           .map(entry -> entry.getValue())
           .toList();
-      if (beansObj.size() != 1) {
-        throw new RuntimeException("Not 1 beanObj");
+      if (beansObj.size() > 1) {
+        throw new RuntimeException("More 1 beanObj in thread map");
       }
       return beansObj.stream().findFirst();
     }
@@ -193,7 +206,7 @@ public class BeanFactory {
   }
 
   private void putBeanInMaps(BeanDefinition beanDefinition, Object bean) {
-    if (beanDefinition.getClazz().isAnnotationPresent(ThreadScope.class)) {
+    if (beanDefinition.getScope().equals("thread")) {
       if (threadBeanMap.containsKey(Thread.currentThread())) {
         threadBeanMap.get(Thread.currentThread()).put(beanDefinition, bean);
       } else {
@@ -202,7 +215,7 @@ public class BeanFactory {
         threadBeanMap.put(Thread.currentThread(), threadMap);
       }
     }
-    if (beanDefinition.getClazz().isAnnotationPresent(Singleton.class)) {
+    if (beanDefinition.getScope().equals("singleton")) {
       sinletonBeanMap.put(beanDefinition, bean);
     }
 

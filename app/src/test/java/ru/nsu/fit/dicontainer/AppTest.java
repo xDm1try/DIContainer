@@ -4,8 +4,28 @@
 package ru.nsu.fit.dicontainer;
 
 import org.junit.jupiter.api.Test;
+import ru.nsu.fit.dicontainer.context.ApplicationContext;
+import ru.nsu.fit.dicontainer.model.Person;
+import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
 
+
+
+  @Test
+  public void ThreadScope() {
+    App app = new App();
+    ApplicationContext context = app.run();
+    Thread th2 = new Thread(() -> {
+      GiftChooseHelper obj1 = context.getBean(GiftChooseHelper.class);
+      System.out.println("1" + obj1);
+      obj1.choose(new Person("NAME1"));
+    });
+    GiftChooseHelper obj2 = context.getBean(GiftChooseHelper.class);
+    System.out.println("1" + obj2);
+    obj2.choose(new Person("NAME2"));
+    th2.start();
+  }
 }

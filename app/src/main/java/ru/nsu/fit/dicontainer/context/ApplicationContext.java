@@ -53,7 +53,6 @@ public class ApplicationContext {
     List<BeanDefinition> beanDefinitionList = this.beanConfigurators.stream()
         .flatMap(beanConfigurator -> beanConfigurator.getBeanDefinitions().stream())
         .toList();
-    System.out.println(beanDefinitionList);
     return beanDefinitionList;
   }
 

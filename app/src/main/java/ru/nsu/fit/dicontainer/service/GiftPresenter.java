@@ -11,7 +11,7 @@ import ru.nsu.fit.dicontainer.factory.BeanFactory;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 
-@Prototype
+
 public class GiftPresenter {
   @Inject
   private GiftChooseHelper giftChooseHelper;
@@ -22,7 +22,7 @@ public class GiftPresenter {
 
   @PostConstruct
   public void postConstruct(){
-    System.out.println("Gift presenter has been initialized");
+    System.out.println("Gift presenter has been initialized " + this.hashCode());
   }
 
   public void present(Person person){
@@ -30,6 +30,7 @@ public class GiftPresenter {
     System.out.println("Gift has been chosen: " + gift.getName());
     paymentSystem.pay(gift);
     deliverySystem.deliver(gift, person);
+    System.out.println(this.getClass().getSimpleName() + " " + this.hashCode() + " completed work");
   }
 
 }

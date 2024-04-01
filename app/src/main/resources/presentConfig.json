@@ -1,0 +1,50 @@
+{
+  "beans": [
+    {
+      "name": "GiftPresenterName",
+      "classPath": "ru.nsu.fit.dicontainer.service.GiftPresenter",
+      "scope": "singleton",
+      "properties": [
+        {
+          "name": "SmartGiftChooseHelperName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.SmartGiftChooseHelper"
+        },
+        {
+          "name": "CashPaymentSystemName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.CashPaymentSystem"
+        },
+        {
+          "name": "PostDeliverySystemName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.PostDeliverySystem"
+        }
+      ]
+    },
+    {
+      "name": "SmartGiftChooseHelperName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.SmartGiftChooseHelper",
+      "scope": "singleton",
+      "properties": [
+        {
+          "name": "SmartRecommenderName",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.SmartRecommender"
+        }
+      ]
+    },
+    {
+      "name": "SmartRecommenderName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.SmartRecommender",
+      "scope": "singleton"
+    },
+    {
+      "name": "CashPaymentSystemName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.CashPaymentSystem",
+      "scope": "singleton"
+    },
+    {
+      "name": "PostDeliverySystemName",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.PostDeliverySystem",
+      "scope": "singleton"
+
+    }
+  ]
+}

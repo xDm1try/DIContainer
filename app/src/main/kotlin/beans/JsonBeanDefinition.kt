@@ -11,7 +11,7 @@ data class JsonBeanDefinition(var name: String,
                               var classPath: String,
                               var scope: String? = "singleton",
                               var constructorArgs: List<ConstructorArg>? = null,
-                              var properties: List<Property>? = null) : BeanDefinition
+                              var properties: List<Property>? = null)
 
 @Serializable
 data class JsonBeanDefinitions(var beans: List<JsonBeanDefinition>)

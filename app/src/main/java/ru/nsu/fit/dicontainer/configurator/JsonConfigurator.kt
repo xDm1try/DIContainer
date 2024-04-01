@@ -12,7 +12,7 @@ class JsonConfigurator: BeanConfigurator {
     }
 
     override fun getBeanDefinitions(): List<BeanDefinition> {
-        val jsonBeanDefinitions = jsonParser.parse("/config.json")
+        val jsonBeanDefinitions = jsonParser.parse(path)
         val jsonProcessor = JsonBeanProcessor()
         return jsonProcessor.process(jsonBeanDefinitions)
     }
