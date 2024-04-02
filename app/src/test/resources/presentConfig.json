@@ -35,7 +35,7 @@
     {
       "name": "SmartRecommenderName",
       "classPath": "ru.nsu.fit.dicontainer.service.impl.SmartRecommender",
-      "scope": "singleton",
+      "scope": "prototype",
       "constructorArgs": [],
       "properties": []
     },

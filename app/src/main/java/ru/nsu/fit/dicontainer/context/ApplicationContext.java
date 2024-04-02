@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.beans.BeanDefinition;
 import org.reflections.Reflections;
-import ru.nsu.fit.dicontainer.annotation.Prototype;
-import ru.nsu.fit.dicontainer.config.Configuration;
 import ru.nsu.fit.dicontainer.configurator.BeanConfigurator;
 import ru.nsu.fit.dicontainer.dfs.FinderCycle;
 import ru.nsu.fit.dicontainer.exception.BeanCurrentlyInCreationException;
@@ -15,10 +13,6 @@ import ru.nsu.fit.dicontainer.postprocessor.BeanPostProcessor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class ApplicationContext {
   @Setter

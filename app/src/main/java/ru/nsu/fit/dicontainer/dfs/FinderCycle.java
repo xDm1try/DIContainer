@@ -22,7 +22,6 @@ public class FinderCycle {
       allWrappers.stream().filter(wrapper -> dependencies.contains(wrapper.beanDefinition.getName()))
           .forEach(wrapper -> {
             queue.add(wrapper);
-            System.out.println(queue);
           });
 
       while(!queue.isEmpty()){

@@ -1,7 +1,6 @@
 package ru.nsu.fit.dicontainer.service.impl;
 
 import ru.nsu.fit.dicontainer.annotation.PostConstruct;
-import ru.nsu.fit.dicontainer.annotation.ThreadScope;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
@@ -9,8 +8,6 @@ import ru.nsu.fit.dicontainer.service.Recommender;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-@ThreadScope
 public class SmartGiftChooseHelper implements GiftChooseHelper {
 
   @Inject

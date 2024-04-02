@@ -2,13 +2,8 @@ package ru.nsu.fit.dicontainer.service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Scope;
-import javax.inject.Singleton;
 
 import ru.nsu.fit.dicontainer.annotation.PostConstruct;
-import ru.nsu.fit.dicontainer.annotation.Prototype;
-import ru.nsu.fit.dicontainer.annotation.ThreadScope;
-import ru.nsu.fit.dicontainer.factory.BeanFactory;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 
