@@ -15,109 +15,121 @@ import ru.nsu.fit.dicontainer.model.Person;
 import ru.nsu.fit.dicontainer.service.*;
 
 class DiContainerTest {
-  @Test
-  public void singletonsInJson() throws BeanCurrentlyInCreationException {
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
-    giftPresenter.present(new Person("Volodya"));
-    GiftPresenter giftPresenter2 = context.getBean(GiftPresenter.class);
-    Assertions.assertTrue(giftPresenter.hashCode() == giftPresenter2.hashCode());
-  }
-  @Test
-  public void ThreadScope() throws BeanCurrentlyInCreationException {
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig.json");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    final DeliverySystem[] beans = new DeliverySystem[2];
-    Thread th2 = new Thread(() -> {
-      beans[0] = context.getBean(DeliverySystem.class);
-      beans[0].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
-    });
-    th2.start();
-    beans[1] = context.getBean(DeliverySystem.class);
-    beans[1].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
-    try {
-      th2.join();
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    @Test
+    public void singletonsInJson() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+        giftPresenter.present(new Person("Volodya"));
+        GiftPresenter giftPresenter2 = context.getBean(GiftPresenter.class);
+        Assertions.assertTrue(giftPresenter.hashCode() == giftPresenter2.hashCode());
+        System.out.println("Test finished successfully!!!");
     }
-    System.out.println("First thread got obj1 " + beans[0].hashCode());
-    System.out.println("First thread got obj2 " + beans[1].hashCode());
-    Assertions.assertTrue(beans[0].hashCode() != beans[1].hashCode());
-  }
 
-  @Test
-  public void testPrototypeRecommender() throws BeanCurrentlyInCreationException{
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig.json");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    Recommender recommender = context.getBean(Recommender.class);
-    Recommender recommender2 = context.getBean(Recommender.class);
-    Assertions.assertTrue(recommender.hashCode() != recommender2.hashCode());
-  }
-  @Test
-  public void testConstructorParameters() throws BeanCurrentlyInCreationException {
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    DeliverySystem deliverySystem = context.getBean(DeliverySystem.class);
-    deliverySystem.deliver(new Gift("GiftName", 1256), new Person("Solaris"));
-  }
-  @Test
-  public void annotationNamed() throws BeanCurrentlyInCreationException {
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
-    giftPresenter.present(new Person("Nikita"));
-  }
+    @Test
+    public void ThreadScope() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig.json");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        final DeliverySystem[] beans = new DeliverySystem[2];
+        Thread th2 = new Thread(() -> {
+            beans[0] = context.getBean(DeliverySystem.class);
+            beans[0].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
+        });
+        th2.start();
+        beans[1] = context.getBean(DeliverySystem.class);
+        beans[1].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
+        try {
+            th2.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("First thread got obj1 " + beans[0].hashCode());
+        System.out.println("First thread got obj2 " + beans[1].hashCode());
+        Assertions.assertTrue(beans[0].hashCode() != beans[1].hashCode());
+        System.out.println("Test finished successfully!!!");
+    }
 
-  @Test
-  public void testGroovyConfig() throws BeanCurrentlyInCreationException {
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\test\\resources\\config.groovy");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
-    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
-    giftPresenter.present(new Person("Nikita"));
-  }
+    @Test
+    public void testPrototypeRecommender() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig.json");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        Recommender recommender = context.getBean(Recommender.class);
+        Recommender recommender2 = context.getBean(Recommender.class);
+        Assertions.assertTrue(recommender.hashCode() != recommender2.hashCode());
+        System.out.println("Test finished successfully!!!");
+    }
 
-  @Test
-  public void tinyGroovyConfig() throws BeanCurrentlyInCreationException{
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\test\\resources\\Config2.groovy");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
-    DeliverySystem deliverySystem = context.getBean(DeliverySystem.class);
+    @Test
+    public void testConstructorParameters() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        DeliverySystem deliverySystem = context.getBean(DeliverySystem.class);
+        deliverySystem.deliver(new Gift("GiftName", 1256), new Person("Solaris"));
+        System.out.println("Test finished successfully!!!");
+    }
 
-  }
-  @Test
-  public void testJsonConfig() throws BeanCurrentlyInCreationException {
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
-    giftPresenter.present(new Person("Volodya"));
-  }
+    @Test
+    public void annotationNamed() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+        giftPresenter.present(new Person("Nikita"));
+        System.out.println("Test finished successfully!!!");
+    }
 
-  @Test
-  public void providerCheck() throws BeanCurrentlyInCreationException {
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
-    ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    GiftChooseHelper giftChooseHelper = context.getBean(GiftChooseHelper.class);
-    giftChooseHelper.choose(new Person("Igor Kvant"));
-    Recommender rec1 = giftChooseHelper.getRecommender();
-    Recommender rec2 = giftChooseHelper.getRecommender();
-    Assertions.assertTrue(rec1.hashCode() != rec2.hashCode());
-  }
+    @Test
+    public void testGroovyConfig() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\test\\resources\\config.groovy");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
+        GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+        giftPresenter.present(new Person("Nikita"));
+        System.out.println("Test finished successfully!!!");
+    }
 
-  @Test
-  public void cycleCheck(){
-    DiContainer diContainer = new DiContainer();
-    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/cycleCheck.json");
-    Assertions.assertThrowsExactly(BeanCurrentlyInCreationException.class, () -> {
-      ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
-    });
-  }
+
+    @Test
+    public void providerCheck() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        GiftChooseHelper giftChooseHelper = context.getBean(GiftChooseHelper.class);
+        giftChooseHelper.choose(new Person("Igor Kvant"));
+        Recommender rec1 = giftChooseHelper.getRecommender();
+        Recommender rec2 = giftChooseHelper.getRecommender();
+        Assertions.assertTrue(rec1.hashCode() != rec2.hashCode());
+        System.out.println("Test finished successfully!!!");
+    }
+
+    @Test
+    public void cycleCheck() {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/cycleCheck.json");
+        Assertions.assertThrowsExactly(BeanCurrentlyInCreationException.class, () -> {
+            ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        });
+        System.out.println("Test finished successfully!!!");
+    }
+
+    @Test
+    public void testJsonConfig() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+        GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+        giftPresenter.present(new Person("Volodya"));
+    }
+
+    @Test
+    public void tinyGroovyConfig() throws BeanCurrentlyInCreationException {
+        DiContainer diContainer = new DiContainer();
+        BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\test\\resources\\Config2.groovy");
+        ApplicationContext context = diContainer.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
+        DeliverySystem deliverySystem = context.getBean(DeliverySystem.class);
+    }
 }
