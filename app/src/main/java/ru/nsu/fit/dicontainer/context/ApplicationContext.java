@@ -7,6 +7,8 @@ import org.reflections.Reflections;
 import ru.nsu.fit.dicontainer.annotation.Prototype;
 import ru.nsu.fit.dicontainer.config.Configuration;
 import ru.nsu.fit.dicontainer.configurator.BeanConfigurator;
+import ru.nsu.fit.dicontainer.dfs.FinderCycle;
+import ru.nsu.fit.dicontainer.exception.BeanCurrentlyInCreationException;
 import ru.nsu.fit.dicontainer.factory.BeanFactory;
 import ru.nsu.fit.dicontainer.postprocessor.BeanPostProcessor;
 
@@ -26,16 +28,31 @@ public class ApplicationContext {
   @Getter
   private Reflections scanner;
   private List<BeanConfigurator> beanConfigurators = new ArrayList<>();
+  private List<BeanDefinition> beanDefinitions;
 
-  public ApplicationContext(String packageToScan, BeanConfigurator beanConfigurator) {
+  public ApplicationContext(String packageToScan, BeanConfigurator beanConfigurator) throws BeanCurrentlyInCreationException {
     this.packageToScan = packageToScan;
     this.scanner = new Reflections(packageToScan);
     this.beanConfigurators.add(beanConfigurator);
+    this.beanDefinitions = this.beanConfigurators.stream()
+        .flatMap(beanConfigurator1 -> beanConfigurator1.getBeanDefinitions().stream())
+        .distinct()
+        .toList();
+    if(FinderCycle.hasCycleReferences(this.beanDefinitions)){
+      throw new BeanCurrentlyInCreationException();
+    }
   }
 
-  public ApplicationContext(String packageToScan, List<BeanConfigurator> beanConfigurators) {
+  public ApplicationContext(String packageToScan, List<BeanConfigurator> beanConfigurators) throws BeanCurrentlyInCreationException {
     this.packageToScan = packageToScan;
     this.beanConfigurators.addAll(beanConfigurators);
+    this.beanDefinitions = this.beanConfigurators.stream()
+        .flatMap(beanConfigurator1 -> beanConfigurator1.getBeanDefinitions().stream())
+        .distinct()
+        .toList();
+    if(FinderCycle.hasCycleReferences(this.beanDefinitions)){
+      throw new BeanCurrentlyInCreationException();
+    }
   }
 
   public <T> T getBean(Class<T> clazz) {
@@ -51,10 +68,7 @@ public class ApplicationContext {
   }
 
   public List<BeanDefinition> getAllBeanDefinitions() {
-    List<BeanDefinition> beanDefinitionList = this.beanConfigurators.stream()
-        .flatMap(beanConfigurator -> beanConfigurator.getBeanDefinitions().stream())
-        .toList();
-    return beanDefinitionList;
+    return new ArrayList<>(this.beanDefinitions);
   }
 
   private void callPostProcessors(Object bean) {

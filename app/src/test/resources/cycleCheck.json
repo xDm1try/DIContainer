@@ -1,0 +1,26 @@
+{
+  "beans": [
+    {
+      "name": "ServiceA",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.ServiceAImpl",
+      "scope": "singleton",
+      "properties": [
+        {
+          "name": "ServiceB",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.ServiceBImpl"
+        }
+      ]
+    },
+    {
+      "name": "ServiceB",
+      "classPath": "ru.nsu.fit.dicontainer.service.impl.ServiceBImpl",
+      "scope": "singleton",
+      "properties": [
+        {
+          "name": "ServiceA",
+          "ref": "ru.nsu.fit.dicontainer.service.impl.ServiceAImpl"
+        }
+      ]
+    }
+  ]
+}
