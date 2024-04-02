@@ -11,11 +11,9 @@ import ru.nsu.fit.dicontainer.service.GiftPresenter;
 
 public class App {
   public ApplicationContext run(String packagePath, BeanConfigurator configurator){
-
     ApplicationContext applicationContext = new ApplicationContext(packagePath ,configurator);
     BeanFactory beanFactory = new BeanFactory(applicationContext);
     applicationContext.setBeanFactory(beanFactory);
-
     return applicationContext;
   }
 

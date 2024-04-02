@@ -14,6 +14,7 @@ import ru.nsu.fit.dicontainer.service.DeliverySystem;
 import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
 import ru.nsu.fit.dicontainer.service.GiftPresenter;
 import ru.nsu.fit.dicontainer.service.impl.PostDeliverySystem;
+import ru.nsu.fit.dicontainer.service.impl.Recommender;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,6 +44,9 @@ class AppTest {
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
     GiftChooseHelper giftChooseHelper = context.getBean(GiftChooseHelper.class);
     giftChooseHelper.choose(new Person("Igor Kvant"));
+    Recommender rec1 = giftChooseHelper.getRecommender();
+    Recommender rec2 = giftChooseHelper.getRecommender();
+    Assertions.assertTrue(rec1.hashCode() != rec2.hashCode());
   }
   @Test
   public void allSingletonsInJson(){

@@ -14,6 +14,6 @@ public class SmartRecommender implements Recommender{
   }
   @Override
   public void recommend() {
-    System.out.println("Smart recommender recommended" + this.hashCode());
+    System.out.println("Smart recommender recommended " + this.hashCode());
   }
 }

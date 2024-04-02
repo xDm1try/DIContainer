@@ -10,7 +10,6 @@ import java.lang.reflect.InvocationTargetException;
 public class CustomProvider<T> implements Provider<T> {
     private final Class<T> clazz;
 
-    @Setter
     private Object[] paramArgs;
 
     public CustomProvider(Class<T> clazz) {
@@ -27,4 +26,7 @@ public class CustomProvider<T> implements Provider<T> {
         }
     }
 
+    public void setParamArgs(Object[] paramArgs) {
+        this.paramArgs = paramArgs;
+    }
 }
