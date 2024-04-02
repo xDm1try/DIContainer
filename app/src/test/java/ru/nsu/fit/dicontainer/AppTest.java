@@ -38,7 +38,7 @@ class AppTest {
   @Test
   public void testGroovyConfig() throws BeanCurrentlyInCreationException {
     App app = new App();
-    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("app/src/main/resources/config.groovy");
+    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\main\\resources\\config.groovy");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
     GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
     giftPresenter.present(new Person("Nikita"));
