@@ -9,7 +9,7 @@ class GroovyConfigParser {
 
     fun parse(fileName: String) : List<BeanDefinitionPostProcessing> {
         val shell = GroovyShell()
-        shell.evaluate(File("main/src/main/kotlin/parsing/GroovyConfigReader.groovy"))
+        shell.evaluate(File("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\main\\java\\ru\\nsu\\fit\\dicontainer\\reader\\GroovyConfigReader.groovy"))
         val beanDefinitions = shell.evaluate(File(fileName)) as List<BeanDefinitionPostProcessing>
         return beanDefinitions
     }
