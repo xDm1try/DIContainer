@@ -50,8 +50,8 @@ class BeanDefinitionFactory {
             String name,
             Class clazz,
             String scope = "singleton",
-            List<ConstructorArg> constructorArgs = null,
-            List<Property> properties = null
+            List<ConstructorArg> constructorArgs = [],
+            List<Property> properties = []
     ) {
         beans << new BeanDefinitionPostProcessing(
                 clazz,

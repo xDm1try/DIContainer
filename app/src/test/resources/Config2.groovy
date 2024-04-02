@@ -15,45 +15,43 @@ import ru.nsu.fit.dicontainer.service.impl.SmartRecommender
 def reader = new GroovyConfigReader()
 
 reader.beans {
-    bean(
-            "GiftPresenterName",
-            GiftPresenter,
-            "singleton",
-            [],
-            [
-                    new Property("SmartGiftChooseHelperName", SmartGiftChooseHelper),
-                    new Property("CashPaymentSystemName", CashPaymentSystem),
-                    new Property("PostDeliverySystemName", PostDeliverySystem)
-            ],
-    )
-    bean(
-            "SmartGiftChooseHelperName",
-            SmartGiftChooseHelper,
-            "singleton",
-            [],
-            [
-                    new Property("SmartRecommenderName", SmartRecommender)
-            ]
-    )
-    bean(
-            "SmartRecommenderName",
-            SmartRecommender,
-            "singleton"
-    )
-    bean(
-            "CashPaymentSystemName",
-            CashPaymentSystem,
-            "singleton"
-    )
-    bean(
-            "CardPaymentSystemName",
-            CardPaymentSystem,
-            "singleton"
-    )
+//    bean(
+//            "GiftPresenterName",
+//            GiftPresenter,
+//            "singleton",
+//            [
+//                    new Property("SmartGiftChooseHelperName", SmartGiftChooseHelper),
+//                    new Property("CashPaymentSystemName", CashPaymentSystem),
+//                    new Property("PostDeliverySystemName", PostDeliverySystem)
+//            ],
+//    )
+//    bean(
+//            "SmartGiftChooseHelperName",
+//            SmartGiftChooseHelper,
+//            "singleton",
+//            [
+//                    new Property("SmartRecommenderName", SmartRecommender)
+//            ]
+//    )
+//    bean(
+//            "SmartRecommenderName",
+//            SmartRecommender,
+//            "singleton"
+//    )
+//    bean(
+//            "CashPaymentSystemName",
+//            CashPaymentSystem,
+//            "singleton"
+//    )
+//    bean(
+//            "CardPaymentSystemName",
+//            CardPaymentSystem,
+//            "singleton"
+//    )
     bean(
             "PostDeliverySystemName",
             PostDeliverySystem,
-            "singleton",
+            "thread",
             [
                     new ConstructorArg("CarName", Car),
                     new ConstructorArg("YandexCourierName", CourierYandex),

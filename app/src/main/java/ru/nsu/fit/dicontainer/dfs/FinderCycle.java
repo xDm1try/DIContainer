@@ -45,7 +45,7 @@ public class FinderCycle {
   private static Set<String> getDependencies(Wrapper currentWrapper){
     List<ConstructorArg> constructorArgs = currentWrapper.beanDefinition.getConstructorArgs();
     List<Property> properties = currentWrapper.beanDefinition.getProperties();
-    Set<String> names = constructorArgs.stream().map(ConstructorArg::getName).collect(Collectors.toSet());
+    Set<String> names = constructorArgs.stream().map(arg -> arg.getName()).collect(Collectors.toSet());
     names.addAll(properties.stream().map(Property::getName).collect(Collectors.toSet()));
     return names;
   }

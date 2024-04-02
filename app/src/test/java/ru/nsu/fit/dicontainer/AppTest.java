@@ -13,6 +13,7 @@ import ru.nsu.fit.dicontainer.exception.BeanCurrentlyInCreationException;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 import ru.nsu.fit.dicontainer.service.*;
+import ru.nsu.fit.dicontainer.service.impl.PhoneTracker;
 
 import javax.xml.transform.stream.StreamResult;
 
@@ -38,10 +39,27 @@ class AppTest {
   @Test
   public void testGroovyConfig() throws BeanCurrentlyInCreationException {
     App app = new App();
-    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\main\\resources\\config.groovy");
+    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\test\\resources\\config.groovy");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
     GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
     giftPresenter.present(new Person("Nikita"));
+  }
+
+  @Test
+  public void tinyGroovyConfig() throws BeanCurrentlyInCreationException{
+    App app = new App();
+    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("C:\\Users\\Murav\\Desktop\\DIcont\\DIContainer\\app\\src\\test\\resources\\Config2.groovy");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
+    DeliverySystem deliverySystem = context.getBean(DeliverySystem.class);
+
+  }
+  @Test
+  public void testJsonConfig() throws BeanCurrentlyInCreationException {
+    App app = new App();
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+    giftPresenter.present(new Person("Volodya"));
   }
 
   @Test
