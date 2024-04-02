@@ -1,0 +1,34 @@
+{
+  "beans": [
+    {
+      "name": "myService",
+      "classPath": "org.example.MyService",
+      "scope": "singleton",
+      "constructorArgs": [
+        {
+          "name": "anotherService",
+          "ref": "anotherService"
+        },
+        {
+          "name": "secondParameter",
+          "value": "chipi chipi chapa chapa"
+        }
+      ],
+      "properties": [
+        {
+          "name": "anotherService2",
+          "ref": "anotherService2"
+        }
+      ]
+    },
+    {
+      "name": "anotherService",
+      "classPath": "org.example.AnotherService",
+      "scope": "prototype"
+    },
+    {
+      "name": "anotherService2",
+      "classPath": "org.example.AnotherService2"
+    }
+  ]
+}

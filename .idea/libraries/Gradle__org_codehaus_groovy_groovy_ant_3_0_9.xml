@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: org.codehaus.groovy:groovy-ant:3.0.9" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.codehaus.groovy" artifactId="groovy-ant" version="3.0.9" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-ant/3.0.9/9d04ed718a430e4f12b2da0203f8362ca0693004/groovy-ant-3.0.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
