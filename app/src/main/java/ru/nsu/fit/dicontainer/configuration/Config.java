@@ -8,19 +8,19 @@ import ru.nsu.fit.dicontainer.service.impl.Recommender;
 import ru.nsu.fit.dicontainer.service.impl.SmartGiftChooseHelper;
 import ru.nsu.fit.dicontainer.service.impl.SmartRecommender;
 
-@Configuration
-public class Config {
-
-  @Bean
-  @Prototype
-  public GiftChooseHelper giftChooseHelper() {
-    SmartGiftChooseHelper bean = new SmartGiftChooseHelper();
-    bean.setRecommender(recommender());
-    return bean;
-  }
-
-  @Bean
-  public Recommender recommender() {
-    return new SmartRecommender();
-  }
-}
+//@Configuration
+//public class Config {
+//
+//  @Bean
+//  @Prototype
+//  public GiftChooseHelper giftChooseHelper() {
+//    SmartGiftChooseHelper bean = new SmartGiftChooseHelper();
+//    bean.setRecommender(recommender());
+//    return bean;
+//  }
+//
+//  @Bean
+//  public Recommender recommender() {
+//    return new SmartRecommender();
+//  }
+//}

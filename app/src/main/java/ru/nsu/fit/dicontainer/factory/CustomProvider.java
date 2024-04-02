@@ -29,7 +29,4 @@ public class CustomProvider<T> implements Provider<T> {
         return this.get();
     }
 
-    public void setParamArgs(Object[] paramArgs) {
-        this.paramArgs = paramArgs;
-    }
 }

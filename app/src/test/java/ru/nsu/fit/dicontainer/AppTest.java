@@ -35,6 +35,15 @@ class AppTest {
     GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
     giftPresenter.present(new Person("Nikita"));
   }
+
+  @Test
+  public void providerCheck(){
+    App app = new App();
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    GiftChooseHelper giftChooseHelper = context.getBean(GiftChooseHelper.class);
+    giftChooseHelper.choose(new Person("Igor Kvant"));
+  }
   @Test
   public void allSingletonsInJson(){
     App app = new App();

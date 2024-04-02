@@ -1,6 +1,7 @@
 package ru.nsu.fit.dicontainer.service.impl;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Scope;
 import javax.inject.Singleton;
 
@@ -16,10 +17,11 @@ import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
 public class SmartGiftChooseHelper implements GiftChooseHelper {
 
   @Inject
-  private Recommender recommender;
+  private Provider<Recommender> recommenderProvider;
 
   @Override
   public Gift choose(Person person) {
+    Recommender recommender = recommenderProvider.get();
     recommender.recommend();
     System.out.println("Recommended by " + recommender.getClass().getSimpleName() + " " + recommender.hashCode());
     return new Gift("iPhone", 120000);
@@ -28,9 +30,5 @@ public class SmartGiftChooseHelper implements GiftChooseHelper {
   public void postConstruct(){
     System.out.println("SmartGiftChooseHelper has been initialized " + this.hashCode());
   }
-
-
-  public void setRecommender(Recommender recommender) {
-    this.recommender = recommender;
-  }
+  
 }

@@ -3,26 +3,22 @@ package ru.nsu.fit.dicontainer.factory;
 import org.example.beans.BeanDefinition;
 import org.example.model.ConstructorArg;
 import org.example.model.Property;
-import ru.nsu.fit.dicontainer.annotation.ThreadScope;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
-import ru.nsu.fit.dicontainer.service.Courier;
-import ru.nsu.fit.dicontainer.service.Device;
-import ru.nsu.fit.dicontainer.service.Vehicle;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
+import javax.inject.Provider;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 public class BeanFactory {
   private ApplicationContext applicationContext;
@@ -103,6 +99,11 @@ public class BeanFactory {
     }
   }
 
+  private List<Object> getConstructorBeans(Class<?> clazz) {
+
+
+  }
+
   private Object createBean(BeanDefinition beanDefinition) {
     Class<?> implementationClass = beanDefinition.getClazz();
     List<Property> properties = beanDefinition.getProperties();
@@ -122,6 +123,7 @@ public class BeanFactory {
       }
     }
     try {
+
       List<Object> constructorBeans = new ArrayList<>();
       Constructor<?> constructor = implementationClass.getDeclaredConstructors()[0];
       if (parameters == null || parameters.isEmpty()) {
@@ -144,6 +146,8 @@ public class BeanFactory {
                 }
               }
             });
+
+
         Object[] paramArgs = constructorBeans.toArray();
         bean = constructor.newInstance(paramArgs);
       }
@@ -152,7 +156,22 @@ public class BeanFactory {
             field.setAccessible(true);
             if (field.isAnnotationPresent(Inject.class)) {
               Class<?> type = field.getType();
-              if (type.getTypeName().equals("".getClass().getTypeName())) {
+              if (type.isAssignableFrom(Provider.class)){
+                ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+                Class parameter = (Class)genericType.getActualTypeArguments()[0];
+
+                List<BeanDefinition> beanDefinitionList = this.applicationContext.getAllBeanDefinitions()
+                    .stream()
+                    .filter(beanDefinition1 -> {
+                      Class<?> beanImpl = beanDefinition1.getClazz();
+                      boolean result = parameter.isAssignableFrom(beanImpl);
+                      return result;
+                    }).toList();
+                if (beanDefinitionList.size() != 1){
+                  throw new RuntimeException("Not 1 available beanDefinition" + beanDefinitionList);
+                }
+
+              }else if (type.getTypeName().equals("".getClass().getTypeName())) {
                 List<Property> valueProperties = properties.stream()
                     .filter(property -> property.getValue() != null)
                     .toList();
