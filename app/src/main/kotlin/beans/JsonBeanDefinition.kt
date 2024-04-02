@@ -10,8 +10,8 @@ import org.example.model.Property
 data class JsonBeanDefinition(var name: String,
                               var classPath: String,
                               var scope: String? = "singleton",
-                              var constructorArgs: List<ConstructorArg>? = null,
-                              var properties: List<Property>? = null)
+                              var constructorArgs: List<ConstructorArg>? = listOf(),
+                              var properties: List<Property>? = listOf())
 
 @Serializable
 data class JsonBeanDefinitions(var beans: List<JsonBeanDefinition>)

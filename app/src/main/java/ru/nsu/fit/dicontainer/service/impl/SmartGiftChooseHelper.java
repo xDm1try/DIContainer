@@ -5,6 +5,7 @@ import ru.nsu.fit.dicontainer.annotation.ThreadScope;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
+import ru.nsu.fit.dicontainer.service.Recommender;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

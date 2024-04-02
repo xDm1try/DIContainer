@@ -8,20 +8,17 @@ import org.junit.jupiter.api.Test;
 import ru.nsu.fit.dicontainer.configurator.BeanConfigurator;
 import ru.nsu.fit.dicontainer.configurator.JsonConfigurator;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
+import ru.nsu.fit.dicontainer.exception.BeanCurrentlyInCreationException;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
-import ru.nsu.fit.dicontainer.service.DeliverySystem;
-import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
-import ru.nsu.fit.dicontainer.service.GiftPresenter;
-import ru.nsu.fit.dicontainer.service.impl.PostDeliverySystem;
-import ru.nsu.fit.dicontainer.service.impl.Recommender;
+import ru.nsu.fit.dicontainer.service.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import javax.xml.transform.stream.StreamResult;
 
 class AppTest {
 
   @Test
-  public void testConstructorParameters(){
+  public void testConstructorParameters() throws BeanCurrentlyInCreationException {
     App app = new App();
     BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
@@ -29,7 +26,7 @@ class AppTest {
     deliverySystem.deliver(new Gift("GiftName", 1256), new Person("Solaris"));
   }
   @Test
-  public void annotationNamed(){
+  public void annotationNamed() throws BeanCurrentlyInCreationException {
     App app = new App();
     BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
@@ -38,7 +35,7 @@ class AppTest {
   }
 
   @Test
-  public void providerCheck(){
+  public void providerCheck() throws BeanCurrentlyInCreationException {
     App app = new App();
     BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
@@ -49,7 +46,7 @@ class AppTest {
     Assertions.assertTrue(rec1.hashCode() != rec2.hashCode());
   }
   @Test
-  public void allSingletonsInJson(){
+  public void allSingletonsInJson() throws BeanCurrentlyInCreationException {
     App app = new App();
     BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
@@ -57,7 +54,7 @@ class AppTest {
     giftPresenter.present(new Person("Volodya"));
   }
   @Test
-  public void ThreadScope() {
+  public void ThreadScope() throws BeanCurrentlyInCreationException {
     App app = new App();
     BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig.json");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
@@ -69,8 +66,23 @@ class AppTest {
     th2.start();
     beans[1] = context.getBean(DeliverySystem.class);
     beans[1].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
+    try {
+      th2.join();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     System.out.println("First thread got obj1 " + beans[0].hashCode());
     System.out.println("First thread got obj2 " + beans[1].hashCode());
     Assertions.assertTrue(beans[0].hashCode() != beans[1].hashCode());
+  }
+
+  @Test
+  public void cycleCheck(){
+    App app = new App();
+    BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/cycleCheck.json");
+
+    Assertions.assertThrowsExactly(BeanCurrentlyInCreationException.class, () -> {
+      ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    });
   }
 }
