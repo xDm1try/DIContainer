@@ -54,6 +54,18 @@ public class BeanFactory {
       }
     }
 
+//    if (currentBeanDefinition.getScope().equals("singleton") &&
+//        sinletonBeanMap.containsKey(currentBeanDefinition)) {
+//      return (T) sinletonBeanMap.get(currentBeanDefinition);
+//    }
+//    if (currentBeanDefinition.getScope().equals("thread") &&
+//        threadBeanMap.containsKey(Thread.currentThread())) {
+//      threadBeanMap.entrySet().removeIf(entry -> !entry.getKey().isAlive());
+//      Map<BeanDefinition, Object> threadMap = threadBeanMap.get(Thread.currentThread());
+//      if (threadMap.containsKey(currentBeanDefinition)) {
+//        return (T) threadBeanMap.get(currentBeanDefinition);
+//      }
+//    }
 
     Optional<Object> foundBean = findBeanInMaps(currentBeanDefinition);
     if (findBeanInMaps(currentBeanDefinition).isPresent()) {

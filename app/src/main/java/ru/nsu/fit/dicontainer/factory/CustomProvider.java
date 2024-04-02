@@ -1,0 +1,35 @@
+package ru.nsu.fit.dicontainer.factory;
+
+import ru.nsu.fit.dicontainer.context.ApplicationContext;
+
+import javax.inject.Provider;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+public class CustomProvider<T> implements Provider<T> {
+    private final Class<T> clazz;
+
+    private Object[] paramArgs;
+
+    public CustomProvider(Class<T> clazz) {
+        this.clazz = clazz;
+    }
+
+    @Override
+    public T get() {
+        try {
+            return clazz.getDeclaredConstructor().newInstance(this.paramArgs);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public T get(Object[] ... paramArgs) {
+        this.paramArgs = paramArgs;
+        return this.get();
+    }
+
+    public void setParamArgs(Object[] paramArgs) {
+        this.paramArgs = paramArgs;
+    }
+}

@@ -1,5 +1,7 @@
 package org.example.beans
 
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import org.example.model.ConstructorArg
 import org.example.model.Property
 
