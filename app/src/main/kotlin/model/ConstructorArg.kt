@@ -12,6 +12,8 @@ data class ConstructorArg(
     @SerialName("value") var value: String? = null,
     @Transient var pathToRef: Class<*>? = null
 ) {
+    constructor(name: String, pathToRef: Class<*>) : this(name, null, null, pathToRef)
+    constructor(name: String, value: String) : this(name, null, value, null)
     init {
         require((ref != null && value == null) || (ref == null && value != null))
     }
