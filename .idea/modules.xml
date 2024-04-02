@@ -2,10 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DIContainer.iml" filepath="$PROJECT_DIR$/.idea/DIContainer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/main.iml" filepath="$PROJECT_DIR$/.idea/modules/main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/main.main.iml" filepath="$PROJECT_DIR$/.idea/modules/main.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/main.test.iml" filepath="$PROJECT_DIR$/.idea/modules/main.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ru.nsu.fit.dicontainer.iml" filepath="$PROJECT_DIR$/.idea/modules/ru.nsu.fit.dicontainer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ru.nsu.fit.dicontainer.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ru.nsu.fit.dicontainer.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ru.nsu.fit.dicontainer.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ru.nsu.fit.dicontainer.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ru.nsu.fit.dicontainer.app.test.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ru.nsu.fit.dicontainer.app.test.iml" />
     </modules>
   </component>
 </project>

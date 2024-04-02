@@ -6,6 +6,7 @@ package ru.nsu.fit.dicontainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.nsu.fit.dicontainer.configurator.BeanConfigurator;
+import ru.nsu.fit.dicontainer.configurator.GroovyConfigurator;
 import ru.nsu.fit.dicontainer.configurator.JsonConfigurator;
 import ru.nsu.fit.dicontainer.context.ApplicationContext;
 import ru.nsu.fit.dicontainer.model.Gift;
@@ -33,6 +34,15 @@ class AppTest {
     App app = new App();
     BeanConfigurator jsonBeanConfigurator = new JsonConfigurator("/presentConfig2.json");
     ApplicationContext context = app.run("ru.nsu.fit.dicontainer", jsonBeanConfigurator);
+    GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
+    giftPresenter.present(new Person("Nikita"));
+  }
+
+  @Test
+  public void testGroovyConfig() {
+    App app = new App();
+    BeanConfigurator groovyBeanConfigurator = new GroovyConfigurator("app/src/main/resources/config.groovy");
+    ApplicationContext context = app.run("ru.nsu.fit.dicontainer", groovyBeanConfigurator);
     GiftPresenter giftPresenter = context.getBean(GiftPresenter.class);
     giftPresenter.present(new Person("Nikita"));
   }
