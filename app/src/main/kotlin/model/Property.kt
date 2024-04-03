@@ -12,6 +12,8 @@ data class Property(
     @SerialName("value") var value: String? = null,
     @Transient var pathToRef: @Contextual Class<*>? = null
 ) {
+    constructor(name: String, pathToRef: Class<*>) : this(name, pathToRef.toString(), null, pathToRef)
+    constructor(name: String, value: String) : this(name, null, value, null)
     init {
         require((ref != null && value == null) || (ref == null && value != null))
     }

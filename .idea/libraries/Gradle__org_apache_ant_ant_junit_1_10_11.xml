@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.ant:ant-junit:1.10.11" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.apache.ant" artifactId="ant-junit" version="1.10.11" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-junit/1.10.11/b978a57787b3a359ba7a3a5c3b4fd9199072b516/ant-junit-1.10.11.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,29 +1,33 @@
 package ru.nsu.fit.dicontainer.service.impl;
 
-import javax.inject.Inject;
-import javax.inject.Scope;
-import javax.inject.Singleton;
-
-import ru.nsu.fit.dicontainer.annotation.Prototype;
-import ru.nsu.fit.dicontainer.annotation.ThreadScope;
-import ru.nsu.fit.dicontainer.factory.BeanFactory;
+import ru.nsu.fit.dicontainer.annotation.PostConstruct;
 import ru.nsu.fit.dicontainer.model.Gift;
 import ru.nsu.fit.dicontainer.model.Person;
 import ru.nsu.fit.dicontainer.service.GiftChooseHelper;
+import ru.nsu.fit.dicontainer.service.Recommender;
 
-@ThreadScope
+import javax.inject.Inject;
+import javax.inject.Provider;
 public class SmartGiftChooseHelper implements GiftChooseHelper {
 
-  @Inject()
-  private Recommender recommender;
+  @Inject
+  private Provider<Recommender> recommenderProvider;
 
   @Override
   public Gift choose(Person person) {
+    Recommender recommender = recommenderProvider.get();
     recommender.recommend();
-    System.out.println("Recommended by " + recommender);
+    System.out.println("Recommended by " + recommender.getClass().getSimpleName() + " " + recommender.hashCode());
     return new Gift("iPhone", 120000);
   }
-  public void setRecommender(Recommender recommender) {
-    this.recommender = recommender;
+
+  public Recommender getRecommender() {
+    return this.recommenderProvider.get();
   }
+
+  @PostConstruct
+  public void postConstruct(){
+    System.out.println("SmartGiftChooseHelper has been initialized " + this.hashCode());
+  }
+
 }
