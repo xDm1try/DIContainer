@@ -5,7 +5,7 @@ import ru.nsu.fit.dicontainer.service.Recommender;
 
 import javax.inject.Singleton;
 
-@Singleton
+
 public class SmartRecommender implements Recommender {
   @PostConstruct
   public void postConstruct(){

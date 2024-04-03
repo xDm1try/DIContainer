@@ -11,7 +11,7 @@ import ru.nsu.fit.dicontainer.model.Person;
 public class GiftPresenter {
   @Inject
   private GiftChooseHelper giftChooseHelper;
-  @Named("CashPaymentSystemName")
+  @Named("CardPaymentSystemName")
   private PaymentSystem paymentSystem;
   @Inject
   private DeliverySystem deliverySystem;

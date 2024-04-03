@@ -39,7 +39,7 @@ class DiContainerTest {
         });
         th2.start();
         beans[1] = context.getBean(DeliverySystem.class);
-        beans[1].deliver(new Gift("GiftName", 1256), new Person("Solaris"));
+        beans[1].deliver(new Gift("GiftName", 1256), new Person("Linus"));
         try {
             th2.join();
         } catch (InterruptedException e) {

@@ -6,7 +6,7 @@ import ru.nsu.fit.dicontainer.service.PaymentSystem;
 
 import javax.inject.Singleton;
 import java.sql.SQLOutput;
-@Singleton
+
 public class CashPaymentSystem implements PaymentSystem {
 
   @PostConstruct

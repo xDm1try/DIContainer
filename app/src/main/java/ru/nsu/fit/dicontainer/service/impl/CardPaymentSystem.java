@@ -6,7 +6,7 @@ import ru.nsu.fit.dicontainer.service.PaymentSystem;
 
 import javax.inject.Singleton;
 
-@Singleton
+
 public class CardPaymentSystem implements PaymentSystem {
 
   @PostConstruct
